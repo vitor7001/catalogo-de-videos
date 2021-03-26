@@ -14,8 +14,11 @@ class CategoryController extends Controller
         'is_active' => 'boolean'
     ];
 
-    public function index()
+    public function index(Request $request)
     {
+        if($request->has('only_trashed')){
+            return Category::onlyTrashed()->get();
+        }
         return Category::all();
     }
 
