@@ -10,7 +10,7 @@ class Genre extends Model
     use SoftDeletes, \App\Models\Traits\Uuid;
 
     protected $fillable = ['name', 'is_active'];
-    protected $dates = ['deletec_at'];
+    protected $dates = ['deleted_at'];
 
     public $incrementing = false;
     protected $keyType = 'string';
