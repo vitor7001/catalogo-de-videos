@@ -32,10 +32,16 @@ class CategoryTest extends TestCase
         ]);
 
         $category->refresh();
+
+        //VERIFICAÇÕES UUID
+        //Lógica: pesquisei como validar e acabei caindo na regex que estou utilizando
+        $this->assertNotEmpty($category->id);
+        $this->assertTrue((bool)preg_match('/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i', $category->id));
+       
         $this->assertEquals('teste', $category->name);
         $this->assertNull($category->description);
         $this->assertTrue($category->is_active);
-
+        
 
         $category = Category::create([
             'name' => 'teste',
@@ -61,6 +67,7 @@ class CategoryTest extends TestCase
             'is_active' => true
         ]);
         $this->assertTrue($category->is_active);
+        
     }
 
     public function testUpdate()
@@ -79,6 +86,19 @@ class CategoryTest extends TestCase
 
         foreach($data as $key => $value){
             $this->assertEquals($value, $category->{$key});
+        }
+    }
+
+    public function testDelete()
+    {
+        $categoryCreated = factory(Category::class, 5)->create()->first();
+
+        Category::destroy($categoryCreated->id);
+
+        $allCategories = Category::all();
+
+        foreach($allCategories as $category){
+            $this->assertNotEquals($category->id, $categoryCreated->id);
         }
     }
 }
