@@ -10,11 +10,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class CategoryTest extends TestCase
 {
 
+    private $category;
+
+    protected function setUp(): void
+    {
+        //sempre a cada teste, antes dele
+        parent::setUp();
+        $this->category = new Category();
+    }
+
     public function testFillableAttribute()
     {
         $fillable = ['name', 'description', 'is_active'];
-        $category = new Category();
-        $this->assertEquals($fillable, $category->getFillable());
+        $this->assertEquals($fillable, $this->category->getFillable());
     }
 
     public function testIfUseTraitsAttribute()
@@ -32,26 +40,23 @@ class CategoryTest extends TestCase
     public function testKeyTypeAttribute()
     {
         $keyType = 'string';
-        $category = new Category();
-        $this->assertEquals($keyType, $category->getKeyType());
+        $this->assertEquals($keyType, $this->category->getKeyType());
     }
 
 
     public function testIncrementsAttribute()
     {
-        $category = new Category();
-        $this->assertFalse($category->incrementing);
+        $this->assertFalse($this->category->incrementing);
     }
 
     public function testDatesAttribute()
     {
         $dates = ['deleted_at', 'created_at', 'updated_at'];
-        $category = new Category();
 
         foreach($dates as $date){
-            $this->assertContains($date, $category->getDates());
+            $this->assertContains($date, $this->category->getDates());
         }
 
-        $this->assertCount(count($dates), $category->getDates());
+        $this->assertCount(count($dates), $this-> category->getDates());
     }
 }
