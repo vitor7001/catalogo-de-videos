@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Ramsey\Uuid\Uuid;
 
 class Genre extends Model
 {
@@ -14,4 +15,8 @@ class Genre extends Model
 
     public $incrementing = false;
     protected $keyType = 'string';
+
+    protected $casts =[
+        'is_active' => 'bool'
+    ];
 }
