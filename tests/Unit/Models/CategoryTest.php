@@ -59,4 +59,10 @@ class CategoryTest extends TestCase
 
         $this->assertCount(count($dates), $this-> category->getDates());
     }
+
+    public function testCastAttribute()
+    {
+        $casts = ['is_active' => 'bool'];
+        $this->assertEquals($casts, $this->category->getCasts());
+    }
 }
