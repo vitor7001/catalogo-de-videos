@@ -69,7 +69,7 @@ class GenreTest extends TestCase
     {
         $genre = factory(Genre::class)->create([
             'name' => 'name_genre'
-        ])->first();
+        ]);
 
         $data = [
             'name' => 'name_genre_update'
@@ -92,5 +92,16 @@ class GenreTest extends TestCase
         foreach ($allGenres as $genre) {
             $this->assertNotEquals($genre->id, $genteCreated->id);
         }
+    }
+
+    public function testeSoftDelete()
+    {
+        $genre = factory(Genre::class)->create();
+
+        $genre->delete();
+        $this->assertNull(Genre::find($genre->id));
+
+        $genre->restore();
+        $this->assertNotNull(Genre::find($genre->id));
     }
 }

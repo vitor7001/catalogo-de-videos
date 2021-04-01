@@ -37,7 +37,7 @@ class CategoryTest extends TestCase
         //Lógica: pesquisei como validar e acabei caindo na regex que estou utilizando
         $this->assertNotEmpty($category->id);
         $this->assertTrue((bool)preg_match('/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i', $category->id));
-       
+        $this->assertEquals(36, strlen($category->id));
         $this->assertEquals('teste', $category->name);
         $this->assertNull($category->description);
         $this->assertTrue($category->is_active);
@@ -75,7 +75,7 @@ class CategoryTest extends TestCase
         $category = factory(Category::class)->create([
             'description' => 'test_description',
             'is_active' => false
-        ])->first();
+        ]);
 
         $data = [
             'name' => 'test_name_update',
@@ -100,5 +100,16 @@ class CategoryTest extends TestCase
         foreach($allCategories as $category){
             $this->assertNotEquals($category->id, $categoryCreated->id);
         }
+    }
+
+    public function testeSoftDelete()
+    {
+        $category = factory(Category::class)->create();
+
+        $category->delete();
+        $this->assertNull(Category::find($category->id));
+
+        $category->restore();
+        $this->assertNotNull(Category::find($category->id));
     }
 }
