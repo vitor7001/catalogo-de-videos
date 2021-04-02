@@ -27,52 +27,54 @@ class GenreTest extends TestCase
 
     public function testCreate()
     {
-        $category = Genre::create([
+        $genre = Genre::create([
             'name' => 'teste'
         ]);
 
-        $category->refresh();
+        $genre->refresh();
 
-        $this->assertNotEmpty($category->id);
-        $this->assertTrue((bool)preg_match('/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i', $category->id));
+        $this->assertNotEmpty($genre->id);
+        $this->assertTrue((bool)preg_match('/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i', $genre->id));
        
-        $this->assertEquals('teste', $category->name);
-        $this->assertNull($category->description);
-        $this->assertTrue($category->is_active);
+        $this->assertEquals('teste', $genre->name);
+        $this->assertNull($genre->description);
+        $this->assertTrue($genre->is_active);
         
 
-        $category = Genre::create([
+        $genre = Genre::create([
             'name' => 'teste'
         ]);
-        $this->assertNull($category->description);
+        $this->assertNull($genre->description);
 
 
-        $category = Genre::create([
+        $genre = Genre::create([
             'name' => 'teste'
         ]);
 
-        $category = Genre::create([
+        $genre  = Genre::create([
             'name' => 'teste',
             'is_active' => false
         ]);
-        $this->assertFalse($category->is_active);
+        $this->assertFalse($genre ->is_active);
 
-        $category = Genre::create([
+        $genre  = Genre::create([
             'name' => 'teste',
             'is_active' => true
         ]);
-        $this->assertTrue($category->is_active);
+        $this->assertTrue($genre ->is_active);
         
     }
 
     public function testUpdate()
     {
         $genre = factory(Genre::class)->create([
-            'name' => 'name_genre'
+            'name' => 'name_genre',
+            'is_active' => false
         ]);
 
         $data = [
-            'name' => 'name_genre_update'
+            'name' => 'name_genre_update',
+            'is_active' => true
         ];
         $genre->update($data);
 
