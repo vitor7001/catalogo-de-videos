@@ -5,11 +5,12 @@ namespace Tests\Feature\Http\Controllers\Api;
 use App\Models\Category;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
+use Tests\Traits\TestSaves;
 use Tests\Traits\TestValidations;
 
 class CategoryControllerTest extends TestCase
 {
-    use DatabaseMigrations, TestValidations;
+    use DatabaseMigrations, TestValidations, TestSaves;
 
     private $category;
 
@@ -60,32 +61,26 @@ class CategoryControllerTest extends TestCase
 
     public function testStore()
     {
-        $response = $this->json('POST', route('categories.store'), [
+        $data = [
             'name' => 'test'
+        ];
+        $response = $this->assertStore(
+            $data,
+            $data + ['description' => null, 'is_active' => true, 'deleted_at' => null]
+        );
+        $response->assertJsonStructure([
+            'created_at', 'updated_at'
         ]);
-        $id = $response->json('id');
-        $category = Category::find($id);
 
-
-        $response
-            ->assertStatus(201)
-            ->assertJson($category->toArray());
-
-        $this->assertTrue($response->json('is_active'));
-        $this->assertNull($response->json('description'));
-
-        $response = $this->json('POST', route('categories.store'), [
+        $data = [
             'name' => 'test',
             'description' => 'description',
             'is_active' => false
-        ]);
-
-
-        $response
-            ->assertJsonFragment([
-                'is_active' => false,
-                'description' => 'description'
-            ]);
+        ];
+        $this->assertStore(
+            $data,
+            $data + ['description' => 'description', 'is_active' => false]
+        );
     }
 
 
@@ -130,21 +125,21 @@ class CategoryControllerTest extends TestCase
             ]);
 
 
-            $category->description = 'test';
-            $category->save();
+        $category->description = 'test';
+        $category->save();
 
-            $response = $this->json(
-                'PUT',
-                route('categories.update', ['category' => $category->id]),
-                [
-                    'name' => 'test',
-                    'description' => null
-                ]
-            );
-            $response
-                ->assertJsonFragment([
-                    'description' => null
-                ]);
+        $response = $this->json(
+            'PUT',
+            route('categories.update', ['category' => $category->id]),
+            [
+                'name' => 'test',
+                'description' => null
+            ]
+        );
+        $response
+            ->assertJsonFragment([
+                'description' => null
+            ]);
     }
 
     protected function routeStore()
@@ -155,5 +150,10 @@ class CategoryControllerTest extends TestCase
     protected function routeUpdate()
     {
         return route('categories.update', ['category' => $this->category->id]);
+    }
+
+    protected function model()
+    {
+        return Category::class;
     }
 }
