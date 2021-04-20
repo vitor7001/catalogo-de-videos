@@ -11,26 +11,22 @@ abstract class BasicCrudController extends Controller
 
     protected abstract function model();
 
-    private $rules =[
-        'name' => 'required|max:255',
-        'is_active' => 'boolean'
-    ];
+    protected abstract function rulesStore();
 
     public function index()
     {
         return $this->model()::all();
     }
 
-/*
     public function store(Request $request)
     {
-        $this->validate($request, $this->rules);
+        $this->validate($request, $this->rulesStore());
         $category = Category::create($request->all());
         $category->refresh();
         return $category;
     }
 
-
+/*
     public function show(Category $category)
     {
         return $category;
