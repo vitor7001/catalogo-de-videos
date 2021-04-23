@@ -37,16 +37,8 @@ class GenreTest extends TestCase
         $this->assertTrue((bool)preg_match('/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i', $genre->id));
        
         $this->assertEquals('teste', $genre->name);
-        $this->assertNull($genre->description);
         $this->assertTrue($genre->is_active);
-        
-
-        $genre = Genre::create([
-            'name' => 'teste'
-        ]);
-        $this->assertNull($genre->description);
-
-
+    
         $genre = Genre::create([
             'name' => 'teste'
         ]);
