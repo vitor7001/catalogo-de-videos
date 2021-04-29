@@ -43,20 +43,20 @@ class CategoryControllerTest extends TestCase
         $data = [
             'name' => ''
         ];
-        $this->assertValidationInStoreAction($data, 'required');
-        $this->assertValidationInUpdateAction($data, 'required');
+        $this->assertInvalidationInStoreAction($data, 'required');
+        $this->assertInvalidationInUpdateAction($data, 'required');
 
         $data = [
             'name' => str_repeat('a', 256)
         ];
-        $this->assertValidationInStoreAction($data, 'max.string', ['max' => 255]);
-        $this->assertValidationInUpdateAction($data, 'max.string', ['max' => 255]);
+        $this->assertInvalidationInStoreAction($data, 'max.string', ['max' => 255]);
+        $this->assertInvalidationInUpdateAction($data, 'max.string', ['max' => 255]);
 
         $data = [
             'is_active' => 'a'
         ];
-        $this->assertValidationInStoreAction($data, 'boolean');
-        $this->assertValidationInUpdateAction($data, 'boolean');
+        $this->assertInvalidationInStoreAction($data, 'boolean');
+        $this->assertInvalidationInUpdateAction($data, 'boolean');
     }
 
     public function testStore()
