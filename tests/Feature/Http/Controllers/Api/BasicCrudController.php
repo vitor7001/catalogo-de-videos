@@ -2,9 +2,12 @@
 
 namespace Tests\Feature\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\BasicCrudController as ApiBasicCrudController;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Mockery;
+use ReflectionClass;
 use Tests\Stubs\Controllers\CategoryControllerStub;
 use Tests\Stubs\Models\CategoryStub;
 use Tests\TestCase;
@@ -66,5 +69,33 @@ class BasicCrudController extends TestCase
             CategoryStub::find(1)->toArray(),
             $obj->toArray()
         );
+    }
+
+    public function testIfFindOrFailFetchModel()
+    {
+        $category = CategoryStub::create(['name' => 'test_name', 'description' => 'test_description']);
+
+        $reflectionClass = new ReflectionClass(ApiBasicCrudController::class);
+
+        $reflectionMethod = $reflectionClass->getMethod('findOrFail');
+        $reflectionMethod->setAccessible(true);
+
+        $result = $reflectionMethod->invokeArgs($this->controller, [$category->id]);
+
+        $this->assertInstanceOf(CategoryStub::class, $result);
+    }
+
+    public function testIfFindOrFailthrowExceptionWhenIdInvalid()
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $reflectionClass = new ReflectionClass(ApiBasicCrudController::class);
+
+        $reflectionMethod = $reflectionClass->getMethod('findOrFail');
+        $reflectionMethod->setAccessible(true);
+
+        $result = $reflectionMethod->invokeArgs($this->controller, [0]);
+
+        $this->assertInstanceOf(CategoryStub::class, $result);
     }
 }
